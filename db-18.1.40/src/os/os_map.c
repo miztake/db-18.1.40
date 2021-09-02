@@ -231,15 +231,7 @@ __os_attach(env, infop, rp)
 	if (rp->max < rp->size)
 		rp->max = rp->size;
 	if (ret == 0 && F_ISSET(infop, REGION_CREATE)) {
-#ifdef HAVE_MLOCK
-		/*
-		 * When locking the region in memory extend it fully so that it
-		 * can all be mlock()'d now, and not later when paging could
-		 * interfere with the application. [#21379]
-		 */
-		if (F_ISSET(env, ENV_LOCKDOWN))
-			rp->size = rp->max;
-#endif
+		rp->size = rp->max;
 		if (F_ISSET(dbenv, DB_ENV_REGION_INIT))
 			ret = __db_file_write(env, infop->fhp,
 			    rp->size / MEGABYTE, rp->size % MEGABYTE, 0x00);
